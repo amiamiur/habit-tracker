@@ -1,11 +1,14 @@
 import uvicorn
 from fastapi import FastAPI
 
-app = FastAPI(title="Habit Tracker API (dev)")
+from app.database import engine
+from app import models
+
+# models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="Habit Tracker API")
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "message": "Habit Tracker API"}
+    return {"status": "ok"}
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)

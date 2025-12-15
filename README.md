@@ -35,3 +35,22 @@ pip install -r requirements.txt
 ```bash
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
+
+## Модель данных
+
+В проекте используется реляционная база данных PostgreSQL.
+
+### Сущности
+- **User** — пользователь системы
+- **Habit** — привычка пользователя
+- **HabitLog** — отметка выполнения привычки по дате
+
+### Связи
+- User → Habit (1:N)
+- Habit → HabitLog (1:N)
+
+```mermaid
+erDiagram
+    USERS ||--o{ HABITS : owns
+    HABITS ||--o{ HABIT_LOGS : tracks
+```
