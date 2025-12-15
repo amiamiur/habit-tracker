@@ -16,7 +16,7 @@ Habit Tracker — учебный проект на FastAPI для отслежи
 
 1. Клонировать репозиторий:
 ```bash
-git clone https://github.com/<your-username>/habit-tracker.git
+git clone https://github.com/amiamiur/habit-tracker.git
 cd habit-tracker
 ```
 2. Создать и активировать виртуальное окружение:
