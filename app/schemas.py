@@ -24,6 +24,8 @@ class HabitResponse(BaseModel):
     id: int
     title: str
     description: Optional[str]
+    is_active: bool
+    owner_id: int
 
     class Config:
         from_attributes = True
