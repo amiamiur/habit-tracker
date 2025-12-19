@@ -20,3 +20,7 @@ def root():
 app.include_router(users.router)
 app.include_router(habits.router)
 
+@app.on_event("startup")
+def on_startup():
+    # Создаём таблицы при старте (только для разработки)
+    models.Base.metadata.create_all(bind=engine)
