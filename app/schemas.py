@@ -35,12 +35,15 @@ class HabitResponse(HabitBase):
         from_attributes = True
 
 class HabitLogCreate(BaseModel):
-    date: date
+    habit_id: int
+    date: date | None = None
+    completed: bool = True
 
 class HabitLogResponse(BaseModel):
     id: int
-    date: date
     habit_id: int
+    date: date
+    completed: bool
 
     class Config:
-        from_attributes = True
+        orm_mode = True
