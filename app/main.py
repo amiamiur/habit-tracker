@@ -3,8 +3,7 @@ from fastapi import FastAPI
 
 from app.database import engine
 from app import models
-from app.routers import users, habits
-from app.routers import habit_logs
+from app.routers import users, habits, auth, habit_logs
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -20,6 +19,7 @@ def root():
 app.include_router(users.router)
 app.include_router(habits.router)
 app.include_router(habit_logs.router)
+app.include_router(auth.router)
 
 @app.on_event("startup")
 def on_startup():
