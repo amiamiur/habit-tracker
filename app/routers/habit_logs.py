@@ -42,13 +42,6 @@ def create_habit_log(
     db.refresh(db_log)
     return db_log
 
-
-@router.get("/", response_model=List[HabitLogResponse])
-def get_habit_logs(
-    db: Session = Depends(get_db),
-):
-    return db.query(models.HabitLog).all()
-
 @router.get("/{habit_id}/logs", response_model=list[HabitLogResponse])
 def get_habit_logs(
     habit_id: int,
