@@ -37,7 +37,9 @@ class HabitLog(Base):
     __tablename__ = "habit_logs"
 
     id = Column(Integer, primary_key=True, index=True)
-    date = Column(Date, nullable=False)
-
     habit_id = Column(Integer, ForeignKey("habits.id"), nullable=False)
+
+    date = Column(Date, nullable=False)
+    completed = Column(Boolean, default=True, nullable=False)
+
     habit = relationship("Habit", back_populates="logs")

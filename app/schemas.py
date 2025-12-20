@@ -35,7 +35,7 @@ class HabitResponse(HabitBase):
 
 class HabitLogCreate(BaseModel):
     date: Optional[date] = None
-    completed: bool = True
+    completed: bool
 
 class HabitLogResponse(BaseModel):
     id: int
