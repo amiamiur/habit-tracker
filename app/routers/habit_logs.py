@@ -40,3 +40,20 @@ def get_habit_logs(
     db: Session = Depends(get_db),
 ):
     return db.query(models.HabitLog).all()
+
+@router.get("/{habit_id}/logs", response_model=list[HabitLogResponse])
+def get_habit_logs(
+    habit_id: int,
+    db: Session = Depends(get_db),
+):
+    habit = db.query(models.Habit).filter(models.Habit.id == habit_id).first()
+    if not habit:
+        raise HTTPException(status_code=404, detail="Habit not found")
+
+    return (
+        db.query(models.HabitLog)
+        .filter(models.HabitLog.habit_id == habit_id)
+        .order_by(models.HabitLog.date.desc())
+        .all()
+    )
+

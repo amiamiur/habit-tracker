@@ -45,3 +45,9 @@ class HabitLogResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class HabitStatsResponse(BaseModel):
+    habit_id: int
+    current_streak: int
+    max_streak: int
+    completion_rate: float
