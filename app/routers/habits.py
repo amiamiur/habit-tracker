@@ -33,6 +33,66 @@ def create_habit(
 
     return db_habit
 
+@router.get("/{habit_id}", response_model=HabitResponse)
+def get_habit(
+    habit_id: int,
+    db: Session = Depends(get_db),
+):
+    habit = db.query(models.Habit).filter(models.Habit.id == habit_id).first()
+    if not habit:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Habit not found"
+        )
+    return habit
+
+@router.put("/{habit_id}", response_model=HabitResponse)
+def update_habit(
+    habit_id: int,
+    habit_data: HabitCreate,
+    db: Session = Depends(get_db),
+):
+    habit = db.query(models.Habit).filter(models.Habit.id == habit_id).first()
+    if not habit:
+        raise HTTPException(status_code=404, detail="Habit not found")
+
+    habit.title = habit_data.title
+    habit.description = habit_data.description
+    habit.is_active = habit_data.is_active
+
+    db.commit()
+    db.refresh(habit)
+    return habit
+
+@router.patch("/{habit_id}", response_model=HabitResponse)
+def patch_habit(
+    habit_id: int,
+    habit_data: dict,
+    db: Session = Depends(get_db),
+):
+    habit = db.query(models.Habit).filter(models.Habit.id == habit_id).first()
+    if not habit:
+        raise HTTPException(status_code=404, detail="Habit not found")
+
+    for key, value in habit_data.items():
+        if hasattr(habit, key):
+            setattr(habit, key, value)
+
+    db.commit()
+    db.refresh(habit)
+    return habit
+
+@router.delete("/{habit_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_habit(
+    habit_id: int,
+    db: Session = Depends(get_db),
+):
+    habit = db.query(models.Habit).filter(models.Habit.id == habit_id).first()
+    if not habit:
+        raise HTTPException(status_code=404, detail="Habit not found")
+
+    db.delete(habit)
+    db.commit()
 
 @router.get("/", response_model=list[HabitResponse])
 def get_habits(
