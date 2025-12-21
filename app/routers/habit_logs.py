@@ -42,12 +42,21 @@ def create_habit_log(
     db.refresh(db_log)
     return db_log
 
-@router.get("/{habit_id}/logs", response_model=list[HabitLogResponse])
+@router.get("/{habit_id}/logs",response_model=list[HabitLogResponse])
 def get_habit_logs(
     habit_id: int,
     db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
 ):
-    habit = db.query(models.Habit).filter(models.Habit.id == habit_id).first()
+    habit = (
+        db.query(models.Habit)
+        .filter(
+            models.Habit.id == habit_id,
+            models.Habit.owner_id == current_user.id
+        )
+        .first()
+    )
+
     if not habit:
         raise HTTPException(status_code=404, detail="Habit not found")
 
@@ -57,4 +66,3 @@ def get_habit_logs(
         .order_by(models.HabitLog.date.desc())
         .all()
     )
-
