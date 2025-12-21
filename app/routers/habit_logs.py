@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
@@ -12,7 +12,7 @@ router = APIRouter(
     tags=["Habit Logs"]
 )
 
-@router.post("/{habit_id}/logs", response_model=HabitLogResponse)
+@router.post("/{habit_id}/logs", response_model=HabitLogResponse, status_code=status.HTTP_201_CREATED)
 def create_habit_log(
     habit_id: int,
     log: HabitLogCreate,
@@ -31,9 +31,23 @@ def create_habit_log(
     if not habit:
         raise HTTPException(status_code=404, detail="Habit not found")
 
+    log_date = log.date or date.today()
+
+    # защита от дублей
+    existing = (
+        db.query(models.HabitLog)
+        .filter(
+            models.HabitLog.habit_id == habit_id,
+            models.HabitLog.date == log_date
+        )
+        .first()
+    )
+    if existing:
+        raise HTTPException(status_code=400, detail="Log for this date already exists")
+
     db_log = models.HabitLog(
         habit_id=habit_id,
-        date=log.date,
+        date=log_date,
         completed=log.completed,
     )
 
@@ -42,7 +56,7 @@ def create_habit_log(
     db.refresh(db_log)
     return db_log
 
-@router.get("/{habit_id}/logs",response_model=list[HabitLogResponse])
+@router.get("/{habit_id}/logs", response_model=List[HabitLogResponse])
 def get_habit_logs(
     habit_id: int,
     db: Session = Depends(get_db),
