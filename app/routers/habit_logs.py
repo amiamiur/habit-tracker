@@ -25,7 +25,7 @@ def create_habit_log(
             models.Habit.id == habit_id,
             models.Habit.owner_id == current_user.id,
         )
-        .first() test
+        .first()
     )
 
     if not habit:
